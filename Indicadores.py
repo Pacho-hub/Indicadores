@@ -19,7 +19,7 @@ st.title("📊 Análisis de Rentabilidad por Servicio - 2026")
 st.markdown("<br>", unsafe_allow_html=True)
 
 # 2. Conexión a la Base de Datos (Google Sheets)
-url_sheets = "https://docs.google.com/spreadsheets/d/1S7MJBL_10-DfDCb4E4C3-GJDsluuI41bU_6bUOYl7LM/edit?usp=sharing" 
+url_sheets = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRku-RgSVLA_81ph1d-KBKDS3wNSfU0QXIgS0V59umMIjCatpd4wloeKPJgWzXcJk5VManaF5nUP5lj/pubhtml" 
 
 # Establecer conexión
 conn = st.connection("gsheets", type=GSheetsConnection)
