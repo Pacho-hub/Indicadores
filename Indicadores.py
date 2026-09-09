@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import numpy as np
+from streamlit_gsheets import GSheetsConnection
 
 # 1. Configuración de la aplicación web
 st.set_page_config(page_title="Dashboard Financiero", layout="wide", initial_sidebar_state="collapsed")
@@ -17,18 +18,22 @@ st.markdown("""
 st.title("📊 Análisis de Rentabilidad por Servicio - 2026")
 st.markdown("<br>", unsafe_allow_html=True)
 
-# 2. Cargar el archivo Excel automáticamente
-archivo_excel = "Indicadores.xlsx"
+# 2. Conexión a la Base de Datos (Google Sheets)
+url_sheets = "https://docs.google.com/spreadsheets/d/1S7MJBL_10-DfDCb4E4C3-GJDsluuI41bU_6bUOYl7LM/edit?usp=sharing" 
 
-@st.cache_data
+# Establecer conexión
+conn = st.connection("gsheets", type=GSheetsConnection)
+
+@st.cache_data(ttl=600) # Refresca los datos automáticamente cada 10 minutos
 def cargar_datos():
-    return pd.read_excel(archivo_excel, sheet_name=None)
+    hojas = ["Geofisica", "Instrumentación", "Geoelectrica"]
+    diccionario_datos = {}
+    for hoja in hojas:
+        # Lee cada pestaña directamente desde la nube
+        diccionario_datos[hoja] = conn.read(spreadsheet=url_sheets, worksheet=hoja)
+    return diccionario_datos
 
-try:
-    datos_servicios = cargar_datos()
-except FileNotFoundError:
-    st.error(f"⚠️ No se encontró el archivo '{archivo_excel}'.")
-    st.stop()
+datos_servicios = cargar_datos()
 
 # Paleta de colores corporativa
 COLOR_INGRESOS = '#2563EB'  # Azul corporativo brillante
