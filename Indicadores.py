@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import numpy as np
-from streamlit_gsheets import GSheetsConnection
 
 # 1. Configuración de la aplicación web
 st.set_page_config(page_title="Dashboard Financiero", layout="wide", initial_sidebar_state="collapsed")
@@ -18,22 +17,28 @@ st.markdown("""
 st.title("📊 Análisis de Rentabilidad por Servicio - 2026")
 st.markdown("<br>", unsafe_allow_html=True)
 
-# 2. Conexión a la Base de Datos (Google Sheets)
-url_sheets = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRku-RgSVLA_81ph1d-KBKDS3wNSfU0QXIgS0V59umMIjCatpd4wloeKPJgWzXcJk5VManaF5nUP5lj/pubhtml" 
+# 2. Conexión directa a Google Sheets vía API de Datos (gviz)
+ID_DOCUMENTO = "1S7MJBL_10-DfDCb4E4C3-GJDsluuI41bU_6bUOYl7LM"
 
-# Establecer conexión
-conn = st.connection("gsheets", type=GSheetsConnection)
-
-@st.cache_data(ttl=600) # Refresca los datos automáticamente cada 10 minutos
+@st.cache_data(ttl=600)
 def cargar_datos():
+    # Asegúrate de que el nombre "Instrumentacion" coincida con tu hoja (sin tilde si la cambiaste)
     hojas = ["Geofisica", "Instrumentacion", "Geoelectrica"]
     diccionario_datos = {}
+    
     for hoja in hojas:
-        # Lee cada pestaña directamente desde la nube
-        diccionario_datos[hoja] = conn.read(spreadsheet=url_sheets, worksheet=hoja)
+        # Endpoint nativo de Google para exportación de datos máquina a máquina
+        url = f"https://docs.google.com/spreadsheets/d/{ID_DOCUMENTO}/gviz/tq?tqx=out:csv&sheet={hoja}"
+        # Leemos directamente el CSV estructurado
+        diccionario_datos[hoja] = pd.read_csv(url)
+        
     return diccionario_datos
 
-datos_servicios = cargar_datos()
+try:
+    datos_servicios = cargar_datos()
+except Exception as e:
+    st.error(f"Error de conexión con la fuente de datos: {e}")
+    st.stop()
 
 # Paleta de colores corporativa
 COLOR_INGRESOS = '#2563EB'  # Azul corporativo brillante
