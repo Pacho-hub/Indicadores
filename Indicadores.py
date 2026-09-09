@@ -26,7 +26,7 @@ conn = st.connection("gsheets", type=GSheetsConnection)
 
 @st.cache_data(ttl=600) # Refresca los datos automáticamente cada 10 minutos
 def cargar_datos():
-    hojas = ["Geofisica", "Instrumentación", "Geoelectrica"]
+    hojas = ["Geofisica", "Instrumentacion", "Geoelectrica"]
     diccionario_datos = {}
     for hoja in hojas:
         # Lee cada pestaña directamente desde la nube
