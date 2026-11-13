@@ -14,7 +14,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("📊 Análisis de Rentabilidad por Servicio - 2026")
+st.title("📊 Análisis de Rentabilidad por Servicio")
 st.markdown("<br>", unsafe_allow_html=True)
 
 # 2. Conexión directa a Google Sheets vía API de Datos (gviz)
